@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert, Image, Text, View, FlatList, ActivityIndicator,TouchableOpacity } from 'react-native';
-import { Container, Drawer, Content, Header, Left, Body, Right, Button, Icon, Title, CardItem, Card, Item, Input, Toast} from 'native-base';
+import { Container, Drawer, Content, Header, Left, Body, Right, Button, Icon, Title, CardItem, Card, Item, Input, Toast, Footer, FooterTab} from 'native-base';
 import { connect } from 'react-redux';
 import { loginUser } from '../redux/actions/accounts';
 
@@ -18,20 +18,29 @@ class Login extends Component {
     this.props.loginUserDispatch(this.state.email, this.state.password)
     if (this.props.pending == false) {
       Toast.show({
-        text: "Selamat Datang",
+        text: "Welcome Pokemon Lovers",
         buttonText: "Okay",
         duration: 1500,
         type: "dark"
       })
-      this.props.navigation.navigate('InputPokemon')
+      this.props.navigation.navigate('Profile')
     }
   }
 
   render() {
-    
+
     return (
 
       <Container>
+        <Header style={styles.header}>
+          <Left>
+          </Left>
+          <Body>
+            <Title style={styles.txtheader}>Pokeland</Title>
+          </Body>
+          <Right>
+          </Right>
+        </Header>
         <Content>
           <Image source={require('./assets/pokemon/logo.png')} style={styles.banner}/>
           <Item style={styles.sizeItem}>
@@ -55,7 +64,15 @@ class Login extends Component {
             </Right>
           </CardItem>
         </Content>
-      </Container>
+
+        <Footer>
+          <FooterTab>
+            <Button style={{backgroundColor:'#3a81f7'}} onPress={() => {this.props.navigation.navigate("Home")}}>
+              <Icon name="home" type="FontAwesome"/>
+            </Button>
+          </FooterTab>
+        </Footer>
+        </Container>
 
     );
 
@@ -78,6 +95,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333333',
     marginBottom: 5,
+  },
+  header: {
+    backgroundColor: '#3a81f7',
+  },
+  txtheader: {
+    fontSize: 22,
+    marginLeft:57
   },
   banner: {
     height: 200,

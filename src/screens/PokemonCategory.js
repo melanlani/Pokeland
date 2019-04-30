@@ -13,7 +13,7 @@ class PokemonCategory extends Component {
     })
   }
   render() {
-    const { pokemons, pending } = this.props;
+    const { pokemon, pending } = this.props;
     if (pending) {
       return(
         <View style={styles.viewPending}>
@@ -29,7 +29,7 @@ class PokemonCategory extends Component {
           <Content>
 
             <FlatList
-              data={pokemons}
+              data={pokemon}
               renderItem={({item}) =>(
 
                 <TouchableOpacity onPress={() => {this.props.navigation.navigate('DetailPokemon', {
@@ -53,9 +53,10 @@ class PokemonCategory extends Component {
                           <Body>
                             <Text style={{fontWeight:'bold'}}>Type:</Text>
                             <FlatList
+                              numColumns={5}
                               data={item.types}
                               renderItem={({ item }) => (
-                                  <Text note>{item.name_type}</Text>
+                                  <Text note>{item.name_type} </Text>
                               )}
                               keyExtractor={(item, index) => String(item.id)}
                             />
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  pokemons : state.pokemons.pokemons,
+  pokemon : state.pokemons.pokemon,
   pending : state.pokemons.pending,
 })
 

@@ -11,7 +11,7 @@ class SideBar extends Component {
         <Text style={styles.txtlogo}>Pokeland</Text>
         <Card style={styles.sizeCard}>
           <CardItem>
-            <Button transparent>
+            <Button transparent onPress={() => {this.props.navigation.navigate('Map')}}>
               <Icon name="map" type="FontAwesome" style={{ color: "#3a81f7"}}/>
               <Text style={{ color: "#3a81f7"}}>Map</Text>
             </Button>

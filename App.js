@@ -7,9 +7,10 @@ import store from './src/redux/store';
 
 import Home from './src/screens//Home'
 import InputPokemon from './src/screens/InputPokemon'
+import Profile from './src/screens/Profile'
+import Map from './src/screens/Map'
 import DetailPokemon from './src/screens/DetailPokemon'
 import PokemonCategory from './src/screens/PokemonCategory'
-import InputSearch from './src/screens/InputSearch'
 import Login from './src/screens/Login'
 import Register from './src/screens/Register'
 
@@ -69,19 +70,27 @@ const MainNavigator = createStackNavigator(
     }
   },
 
-
-  Login : {
-    screen: Login,
-    headerMode: '',
+  Profile: {
+    screen: Profile,
+    headerMode: 'none',
     navigationOptions: {
-      title: 'Login Page',
-      headerStyle: {
-        backgroundColor: '#3a81f7',
-      },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontWeight: 'bold',
-      }
+      header: null,
+    }
+  },
+
+  Login: {
+    screen: Login,
+    headerMode: 'none',
+    navigationOptions: {
+      header: null,
+    }
+  },
+
+  Map: {
+    screen: Map,
+    headerMode: 'none',
+    navigationOptions: {
+      header: null,
     }
   },
 

@@ -37,13 +37,6 @@ class Home extends Component {
       this.props.getCategoriesDispatch()
   }
 
-  closeDrawer () {
-    this._drawer._root.close()
-  }
-  openDrawer () {
-    this._drawer._root.open()
-  }
-
   render() {
     const { pokemons, pending, categories } = this.props;
     if (pending) {
@@ -55,21 +48,11 @@ class Home extends Component {
     }
     else {
       return (
-
-      <Drawer ref={(ref) => { this._drawer = ref; }}
-        content={<SideBar navigator={this._navigator} />}
-        onClose={() => this.closeDrawer()} >
-
         <Container>
           <Header style={styles.header}>
             <Left>
-              <Button transparent onPress={() => this.openDrawer()}>
-                <Icon name='menu' />
-              </Button>
             </Left>
-            <Body>
               <Title style={styles.txtheader}>Pokeland</Title>
-            </Body>
             <Right>
             </Right>
           </Header>
@@ -95,18 +78,17 @@ class Home extends Component {
               data={categories}
               numColumns={3}
               renderItem={({item}) =>(
+                <Col style={{ height: 75 }}>
 
-                  <Col style={{ height: 75 }}>
-
-                    <TouchableOpacity onPress={() => {this.props.navigation.navigate('PokemonCategory', {
-                      id: item.id
-                    })}}>
-                    <Card>
-                    <Image source={require('./assets/pokemon/icon1.jpg')} style={styles.banner}/>
-                    <Text style={{marginLeft:35, color: 'black'}}>{item.name_category}</Text>
-                    </Card>
-                    </TouchableOpacity>
-                  </Col>
+                  <TouchableOpacity onPress={() => {this.props.navigation.navigate('PokemonCategory', {
+                    id: item.id
+                  })}}>
+                  <Card>
+                  <Image source={require('./assets/pokemon/logo.png')} style={styles.banner}/>
+                  <Text style={{marginLeft:40, color: 'black'}}>{item.name_category}</Text>
+                  </Card>
+                  </TouchableOpacity>
+                </Col>
               )}
             keyExtractor={(item, index) => index.toString()}
             />
@@ -142,9 +124,10 @@ class Home extends Component {
                           <Body>
                             <Text style={{fontWeight:'bold'}}>Type:</Text>
                             <FlatList
+                              numColumns={5}
                               data={item.types}
                               renderItem={({ item }) => (
-                                  <Text note>{item.name_type}</Text>
+                                  <Text note>{item.name_type} </Text>
                               )}
                               keyExtractor={(item, index) => String(item.id)}
                             />
@@ -179,12 +162,16 @@ class Home extends Component {
             containerStyle={{ }}
             style={{ backgroundColor: '#3a81f7' }}
             position="bottomRight"
-            onPress={() => {this.props.navigation.navigate('InputPokemon')}}>
-              <Icon name="plus" type="FontAwesome" />
+            onPress={() => this.setState({ active: !this.state.active })}>
+              <Icon name="paw" type="FontAwesome" />
+              <Button style={{ backgroundColor: '#DD5144' }} onPress={() => {Alert.alert(``,`${JSON.stringify('You Must be Login')}`); this.props.navigation.navigate('Login')}}>
+                <Icon name="plus" type="FontAwesome"/>
+              </Button>
+              <Button style={{ backgroundColor: '#34A34F' }} onPress={() => {this.props.navigation.navigate('Map')}}>
+                <Icon name="map" type="FontAwesome"/>
+              </Button>
           </Fab>
         </Container>
-
-      </Drawer>
       );
     }
   }
@@ -217,7 +204,8 @@ const styles = StyleSheet.create({
   },
   txtheader: {
     fontSize: 22,
-    marginLeft:57
+    marginLeft:75,
+    marginTop:12
   },
   prodImage: {
     height: 150,

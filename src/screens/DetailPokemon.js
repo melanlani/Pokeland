@@ -1,11 +1,24 @@
 import React, { Component } from 'react';
-import { StyleSheet, Alert, Image, Text, View, FlatList, ActivityIndicator } from 'react-native';
+import { StyleSheet, Alert, Image, Text, View, FlatList, ActivityIndicator, Dimensions } from 'react-native';
 import { Container, Drawer, Content, Header, Left, Body, Right, Button, Icon, Title, CardItem, Card, Spinner, Thumbnail } from 'native-base';
 
 import { connect } from 'react-redux';
 import { getPokemon, detailPoke, searchPokemon } from '../redux/actions/pokemons';
 
+import MapView, { Marker } from 'react-native-maps';
+
 class DetailPokemon extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      pokeMaps: {
+          latitude: -6.301882,
+          longitude: 106.734981,
+          latitudeDelta: 0.0123,
+          longitudeDelta: 0.0123
+      },
+    }
+  }
 
   componentDidMount() {
     this.props.navigation.addListener('didFocus', () => {
@@ -13,8 +26,9 @@ class DetailPokemon extends Component {
         this.props.detailPokeDispatch(id);
     })
   }
+
   render() {
-    const { pokemons, pending} = this.props;
+    const { pokemon, pending} = this.props;
     if (pending) {
       return(
         <View style={styles.viewPending}>
@@ -28,19 +42,19 @@ class DetailPokemon extends Component {
       <Container>
         <Content>
         <FlatList
-          data={pokemons}
+          data={pokemon}
           renderItem={({item}) =>(
               <Card>
                 <CardItem>
                   <Left>
                     <Body>
                       <Text style={styles.txttitle}>{item.name_poke}</Text>
-                      <Text note>Category: {item.category.name_category}</Text>
+                      <Text style={{fontWeight:'bold'}}>Category: {item.category.name_category}</Text>
                     </Body>
                   </Left>
                 </CardItem>
               <CardItem cardBody>
-                <Image source={{ uri: item.image_poke }} style={{height: 300, width: null, flex: 1}}/>
+                <Image source={{ uri: item.image_poke }} style={{height: 504, width: '100%',resizeMode: 'contain'}}/>
               </CardItem>
                 <Card>
                   <CardItem>
@@ -48,21 +62,14 @@ class DetailPokemon extends Component {
                       <Body>
                         <Text style={{fontWeight:'bold'}}>Type:</Text>
                         <FlatList
+                          numColumns={5}
                           data={item.types}
                           renderItem={({ item }) => (
-                              <Text note>{item.name_type}</Text>
+                            <Text style={{color:'#3a81f7'}}>{item.name_type} </Text>
                           )}
                           keyExtractor={(item, index) => String(item.id)}
                         />
                       </Body>
-                    </Left>
-                  </CardItem>
-                </Card>
-
-                <Card style={{height:250}}>
-                  <CardItem header bordered >
-                    <Left>
-                      <Text style={styles.txtbagan}>Maps</Text>
                     </Left>
                   </CardItem>
                 </Card>
@@ -93,7 +100,7 @@ const styles = StyleSheet.create({
   txttitle:{
     fontWeight: 'bold',
     fontSize: 20,
-    color: '#062e56'
+    color: '#3a81f7'
   },
   txtbagan: {
     fontWeight: 'bold',
@@ -112,7 +119,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  pokemons : state.pokemons.pokemons,
+  pokemon : state.pokemons.pokemon,
   pending : state.pokemons.pending,
   categories : state.pokemons.categories
 })

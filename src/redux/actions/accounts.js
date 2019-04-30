@@ -12,10 +12,7 @@ export const loginUser = (email, password) => {
   console.error(payload.data);
 }
 
-export const registerUser = (username, email, password,fileName) => {
-  const config = { headers:
-      { 'content-disposition': 'form-data; name="foto"; filename=fileName',
-        'content-type': 'image/jpeg' } }
+export const registerUser = (username, email, password) => {
   return {
     type: 'REGISTER_USER',
 
@@ -24,7 +21,6 @@ export const registerUser = (username, email, password,fileName) => {
       'email': email,
       'password': password,
     })
-
   }
 
 }

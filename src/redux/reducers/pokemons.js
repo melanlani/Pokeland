@@ -1,6 +1,9 @@
 const initialState = {
   pokemons: [],
   categories: [],
+  pokemon: [],
+  types: [],
+  pokemon: [],
   pending: false,
   error: ''
 }
@@ -10,7 +13,6 @@ export default pokemons = (state = initialState, action) => {
     case 'GET_POKEMON_PENDING':
       return {
         ...state,
-        pokemons: [],
         pending: true
       };
     case 'GET_POKEMON_FULFILLED':
@@ -24,6 +26,18 @@ export default pokemons = (state = initialState, action) => {
         error: action.payload.data,
         pending: false,
       };
+    case 'GET_ALLPOKEMON_FULFILLED':
+      return {
+        ...state,
+        pokemons: action.payload.data.result,
+        pending: false,
+      };
+    case 'GET_ALLPOKEMON_REJECTED':
+      return {
+        error: action.payload.data,
+        pending: false,
+      };
+
     case 'GET_POKEMONUSER_FULFILLED':
       return {
         ...state,
@@ -33,7 +47,6 @@ export default pokemons = (state = initialState, action) => {
 
     case 'GET_CATEGORIES_PENDING':
       return {
-        categories: [],
         pending: true
       };
     case 'GET_CATEGORIES_FULFILLED':
@@ -45,18 +58,28 @@ export default pokemons = (state = initialState, action) => {
     case 'GET_CATEGORIESPOKE_PENDING':
       return {
         ...state,
-        pokemons: [],
         pending: true
       };
     case 'GET_CATEGORIESPOKE_FULFILLED':
       return {
         ...state,
-        pokemons: action.payload.data.result,
+        pokemon: action.payload.data.result,
         pending: false,
       };
+
+    case 'GET_TYPES_PENDING':
+      return {
+        ...state,
+        pending: true
+      };
+    case 'GET_TYPES_FULFILLED':
+      return {
+        types: action.payload.data.result,
+        pending: false,
+      };
+
     case 'SEARCH_POKEMON_PENDING':
       return {
-        pokemons: [],
         pending: true
       };
     case 'SEARCH_POKEMON_FULFILLED':
@@ -75,19 +98,19 @@ export default pokemons = (state = initialState, action) => {
 
       return {
           ...state,
-          pokemons: action.payload.data.result,
+          pokemon: action.payload.data.result,
           pending: false
       }
 
     case 'ADD_POKEMON_PENDING':
       return {
         ...state,
-        pokemons: [],
         pending: true
       };
     case 'ADD_POKEMON_FULFILLED':
       return {
         ...state,
+        pokemons: action.payload.data.result,
         pending: false,
       };
     case 'ADD_POKEMON_REJECTED':
@@ -96,6 +119,19 @@ export default pokemons = (state = initialState, action) => {
         error: action.payload.data,
         pending: false,
       };
+    case 'DELETE_ITEM_PENDING':
+      return {
+        ...state,
+        pokemons: [],
+        pending: true
+      };
+    case 'DELETE_ITEM_FULFILLED':
+
+      return {
+        ...state,
+        pokemons: state.pokemons.filter(listPoke=> listPoke.id !== action.payload.data.pokemons.id),
+        pending: false
+      }
 
     default:
       return state;

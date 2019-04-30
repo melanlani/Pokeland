@@ -1,97 +1,68 @@
 import React, { Component } from 'react';
-import { StyleSheet, Alert, Image, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, Alert, Image, Text, View, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
 import { Container, Drawer, Content, Header, Left, Body, Right, Button,
   Icon, Title, CardItem, Card, Item, Input, Form, Picker, ListItem, CheckBox, Thumbnail, Toast} from 'native-base';
+import MultiSelect from 'react-native-multiple-select';
+import MapView, { Marker } from 'react-native-maps';
 import { getData, removeData } from './storage';
 import { connect } from 'react-redux';
-import { getUserData, dropUser } from '../redux/actions/accounts';
-
+import { getTypes, savePokemon } from '../redux/actions/pokemons';
 class InputPokemon extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: "3",
-      checked: false
-    };
-  }
-  onValueChange(value: string) {
-    this.setState({
-      selected: value
-    });
-  }
-
-  componentDidMount() {
-
-    this.props.navigation.addListener('didFocus', () => {
-      if (this.props.loggedIn === false) {
-          this.props.navigation.navigate('Login')
-      }
-      else {
-          this.checkToken();
-      }
-    })
-  }
-
-  checkToken = async () => {
-    const token = await getData('token')
-    if (token) {
-        this.props.getUserDataDispatch(token);
+      pokeMaps: {
+                latitude: -6.298619197375721,
+                longitude: 106.7357749119401,
+                latitudeDelta: 0.0100,
+                longitudeDelta: 0.0100
+                },
+      category: "1",
+      selectedItems: [],
+      name_poke: 'Ekans',
+      image_poke: 'https://cdn.bulbagarden.net/upload/f/fa/023Ekans.png',
+      latitude: '-6.298619197375721',
+      longitude: '106.7357749119401',
     }
   }
 
-  logout() {
-    Alert.alert(
-      'Apakah yakin ingin keluar?',
-      '',
-      [
-        {
-            text: 'Batal',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-        },
-        { text: 'Ok', onPress: () =>
-          {
-            this.props.dropUserDispatch()
-            removeData('token')
-            this.props.navigation.navigate('Home')
-            Toast.show({
-              text: "See you...",
-              buttonText: "Okay",
-              duration: 1500,
-              type: "dark"
-            })
-          }
-        },
-      ],
-      { cancelable: false },
-    );
+  onValueChange(value: string) {
+    this.setState({
+      category: value
+    });
+  }
+
+  onSelectedItemsChange = selectedItems => {
+
+          alert(JSON.stringify(selectedItems));
+    this.setState({ selectedItems });
+  };
+
+  onMarkerPress(mkr) {
+    Alert.alert(`Coordinate`,`${JSON.stringify(mkr.nativeEvent.coordinate)}`);
+    this.setState({
+        latitude: mkr.nativeEvent.coordinate.latitude,
+        longitude: mkr.nativeEvent.coordinate.longitude,
+    })
+  }
+  componentDidMount() {
+    this.props.getTypesDispatch();
+  }
+
+  savePokemon = () => {
+    this.props.savePokemonDispatch(this.state.category, this.state.selectedItems, this.state.name_poke, this.state.image_poke, this.state.latitude, this.state.longitude)
+      Toast.show({
+        text: 'New Pokemon added',
+        duration: 1500
+      })
+      this.props.navigation.navigate('Profile')
   }
 
   render() {
-    const { id, username, email, foto} = this.props.user
 
     return (
       <Container>
       <Content>
-        <Card style={{flex: 0}}>
-          <CardItem header bordered>
-            <Text style={styles.txttitle}>Profile</Text>
-          </CardItem>
-          <CardItem >
-            <Left>
-              <Thumbnail circle large source={{ uri: foto }} />
-            </Left>
-            <Body>
-              <Text style={styles.txtname}>{username}</Text>
-              <Text style={styles.txtemail}>{email}</Text>
-            </Body>
-            <Right>
-              <Button style={styles.btnLogout} onPress={() => this.logout()}>
-                <Text style={styles.txtlogout}>Logout</Text>
-              </Button>
-            </Right>
-          </CardItem>
-        </Card>
         <Card>
           <CardItem header bordered>
             <Text style={styles.txtsubtitle}>Add Pokemon</Text>
@@ -99,12 +70,14 @@ class InputPokemon extends Component {
           <Text style={{marginLeft:18, fontWeight:'bold', color:'#3a81f7', fontSize:16, marginTop:12}}>Name</Text>
           <CardItem>
             <Item rounded style={{height:40, width:318, backgroundColor:'#c5d3e8'}}>
-              <Input placeholder='Pokemon Name'/>
+              <Input placeholder='Pokemon Name' onChangeText={(name_poke) => this.setState({name_poke})}
+                value={this.state.name_poke}/>
             </Item>
           </CardItem>
           <CardItem>
             <Item rounded style={{height:40, width:318, backgroundColor:'#c5d3e8'}}>
-              <Input placeholder='Pokemon Url Foto'/>
+              <Input placeholder='Pokemon Url Foto' onChangeText={(image_poke) => this.setState({image_poke})}
+                value={this.state.image_poke}/>
             </Item>
           </CardItem>
             <Text style={{marginLeft:18, fontWeight:'bold', color:'#3a81f7', fontSize:16}}>Category</Text>
@@ -115,7 +88,7 @@ class InputPokemon extends Component {
                 iosHeader="Select your Category"
                 iosIcon={<Icon name="arrow-down" />}
                 style={{ width: undefined }}
-                selectedValue={this.state.selected}
+                selectedValue={this.state.category}
                 onValueChange={this.onValueChange.bind(this)}
               >
                 <Picker.Item label="Dragon" value="1" />
@@ -125,39 +98,51 @@ class InputPokemon extends Component {
           </Form>
           </CardItem>
             <Text style={{marginLeft:18, fontWeight:'bold', color:'#3a81f7', fontSize:16}}>Tipe</Text>
-            <ListItem>
-              <CheckBox checked={true} />
-              <Body>
-                <Text>Normal</Text>
-              </Body>
-            </ListItem>
-            <ListItem>
-              <CheckBox checked={true} />
-              <Body>
-                <Text>Fighting</Text>
-              </Body>
-            </ListItem>
-            <ListItem>
-              <CheckBox checked={false} color="green"/>
-              <Body>
-                <Text>Flying</Text>
-              </Body>
-            </ListItem>
-            <ListItem>
-              <CheckBox checked={false} color="green"/>
-              <Body>
-                <Text>Poison</Text>
-              </Body>
-            </ListItem>
-          <CardItem>
-
-          </CardItem>
+            <CardItem>
+            <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'stretch' }}>
+            <MultiSelect
+              hideTags
+              items={this.props.types}
+              uniqueKey="id"
+              ref={(component) => { this.multiSelect = component }}
+              onSelectedItemsChange={this.onSelectedItemsChange}
+              selectedItems={this.state.selectedItems}
+              selectText="Pick Items"
+              searchInputPlaceholderText="Search Items..."
+              onChangeInput={ (text)=> console.log(text)}
+              altFontFamily="ProximaNova-Light"
+              tagRemoveIconColor="#CCC"
+              tagBorderColor="#CCC"
+              tagTextColor="#CCC"
+              selectedItemTextColor="#CCC"
+              selectedItemIconColor="#CCC"
+              itemTextColor="#000"
+              displayKey="name_type"
+              searchInputStyle={{ color: '#CCC' }}
+              submitButtonColor="#CCC"
+              submitButtonText="Submit"
+            />
+            </View>
+            </CardItem>
+        </Card>
+        <Card>
+          <Text style={styles.txtLocation}>Location</Text>
+          <MapView
+            style={{ width: '100%', height: 300 }}
+            region={this.state.pokeMaps}
+          >
+            <MapView.Marker
+              draggable
+              coordinate={this.state.pokeMaps}
+              onDragEnd={this.onMarkerPress.bind(this)}
+            />
+          </MapView>
         </Card>
 
         <Card>
           <CardItem>
             <Button active style={styles.btnCart}
-            onPress={() => {this.props.navigation.navigate("Home")}}>
+            onPress={() => this.savePokemon()}>
               <Text style={styles.txtBtnCart}>Save</Text>
             </Button>
           </CardItem>
@@ -228,24 +213,30 @@ const styles = StyleSheet.create({
     width:49,
     height:40,
     marginBottom: 35
+  },
+  txtLocation: {
+    marginLeft:18,
+    fontWeight:'bold',
+    color:'#3a81f7',
+    fontSize:16,
+    marginBottom:12,
+    marginTop:12
   }
 
 });
 
 const mapStateToProps = state => ({
-  loggedIn: state.accounts.loggedIn,
-  user: state.accounts.user,
-  token: state.accounts.access_token,
-  pending: state.accounts.pending
+  pending: state.pokemons.pending,
+  types: state.pokemons.types
 })
 
 const mapDispatchToProps = dispatch => {
   return {
-    getUserDataDispatch: (token) => {
-      dispatch(getUserData(token))
+    getTypesDispatch: () => {
+      dispatch(getTypes())
     },
-    dropUserDispatch: () => {
-      dispatch(dropUser())
+    savePokemonDispatch: (category, selectedItems, name_poke, image_poke, latitude, longitude) => {
+      dispatch(savePokemon(category, selectedItems, name_poke, image_poke, latitude, longitude))
     },
   }
 }

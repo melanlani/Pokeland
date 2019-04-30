@@ -1,44 +1,56 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert, Image, Text, View, FlatList, ActivityIndicator } from 'react-native';
-import { Container, Drawer, Content, Header, Left, Body, Right, Button, Icon, Title, CardItem, Card, Item, Input, Thumbnail} from 'native-base';
+import { Container, Drawer, Content, Header, Left, Body, Right, Button, Icon, Title, CardItem, Card, Toast, Item, Input, Thumbnail} from 'native-base';
+import { connect } from 'react-redux';
+import { registerUser } from '../redux/actions/accounts';
 
 class Register extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      username: 'testes',
+      email: 'tes@gmail.com',
+      password:'123'
+    }
+  }
 
+  register = () => {
+    this.props.registerUserDispatch(this.state.username,this.state.email,this.state.password)
+    if (this.props.pending == false) {
+      Toast.show({
+        text: "Selamat Datang",
+        buttonText: "Okay",
+        duration: 1500,
+        type: "dark"
+      })
+      this.props.navigation.navigate('Home')
+    }
+  }
 
   render() {
 
     return (
-
       <Container>
         <Content>
 
           <Item style={styles.sizeItem}>
-            <Input placeholder="Email"/>
+            <Input placeholder="Email" onChangeText={(email) => this.setState({email})}
+              value={this.state.email} />
           </Item>
           <Item style={styles.sizeItem}>
-            <Input placeholder="Username"/>
+            <Input placeholder="Username" onChangeText={(username) => this.setState({username})}
+              value={this.state.username}/>
           </Item>
           <Item style={styles.sizeItem}>
-            <Input placeholder="Password" secureTextEntry={true}/>
+            <Input placeholder="Password" secureTextEntry={true} onChangeText={(password) => this.setState({password})}
+              value={this.state.password}/>
           </Item>
-          <CardItem>
-          <Item style={styles.sizeItemm}>
-            <Left>
-              <Text style={styles.txtlabel}>Foto</Text>
-            </Left>
-            <Button style={styles.btnUpload} >
-              <Text style={styles.txtUpload}>Upload</Text>
-            </Button>
-          </Item >
-          </CardItem>
-          <Button style={styles.btnLogin} onPress={() => {this.props.navigation.navigate('ButtomNav')}}>
+          <Button style={styles.btnLogin} onPress={() => this.register()}>
             <Text style={styles.txtlogin}>Daftar</Text>
           </Button>
         </Content>
       </Container>
-
     );
-
   }
 }
 const styles = StyleSheet.create({
@@ -105,4 +117,18 @@ const styles = StyleSheet.create({
 
 });
 
-export default Register;
+const mapStateToProps = state => ({
+    loggedIn: state.accounts.loggedIn,
+    user: state.accounts.user,
+    pending: state.accounts.pending,
+})
+
+const mapDispatchToProps = dispatch => {
+  return {
+    registerUserDispatch: (username,email,password) => {
+    dispatch(registerUser(username,email,password))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register);
