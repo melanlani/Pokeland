@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert, Image, Text, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { Container, Thumbnail, Drawer, Content, Header, Left, Body, Icon, Right, Button, Fab, Title, CardItem, Card, Item, Input, Grid, Col} from 'native-base';
-import SideBar from './SideBar';
+import { Container, Thumbnail, Content, Header, Left, Body, Icon, Right, Button, Fab, Title, CardItem, Card, Item, Input, Grid, Col} from 'native-base';
+
 import { connect } from 'react-redux';
 import { getPokemon, getCategories, searchPokemon } from '../redux/actions/pokemons';
 
@@ -164,7 +164,7 @@ class Home extends Component {
             position="bottomRight"
             onPress={() => this.setState({ active: !this.state.active })}>
               <Icon name="paw" type="FontAwesome" />
-              <Button style={{ backgroundColor: '#DD5144' }} onPress={() => {Alert.alert(``,`${JSON.stringify('You Must be Login')}`); this.props.navigation.navigate('Login')}}>
+              <Button style={{ backgroundColor: '#DD5144' }} onPress={() => { this.props.navigation.navigate('Profile')}}>
                 <Icon name="plus" type="FontAwesome"/>
               </Button>
               <Button style={{ backgroundColor: '#34A34F' }} onPress={() => {this.props.navigation.navigate('Map')}}>

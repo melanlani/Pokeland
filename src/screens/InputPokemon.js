@@ -33,16 +33,15 @@ class InputPokemon extends Component {
   }
 
   onSelectedItemsChange = selectedItems => {
-
-          alert(JSON.stringify(selectedItems));
+    alert(JSON.stringify(selectedItems));
     this.setState({ selectedItems });
   };
 
-  onMarkerPress(mkr) {
-    Alert.alert(`Coordinate`,`${JSON.stringify(mkr.nativeEvent.coordinate)}`);
+  onMarkerPress(e) {
+    Alert.alert(`Coordinate`,`${JSON.stringify(e.nativeEvent.coordinate)}`);
     this.setState({
-        latitude: mkr.nativeEvent.coordinate.latitude,
-        longitude: mkr.nativeEvent.coordinate.longitude,
+        latitude: e.nativeEvent.coordinate.latitude,
+        longitude: e.nativeEvent.coordinate.longitude,
     })
   }
   componentDidMount() {

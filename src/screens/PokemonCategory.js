@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert, Image, Text, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { Container, Thumbnail, Drawer, Content, Header, Left, Body, Icon, Right, Button, Fab, Title, CardItem, Card, Item, Input, Grid, Col} from 'native-base';
-import SideBar from './SideBar';
+import { Container, Thumbnail, Content, Header, Left, Body, Icon, Right, Button, Fab, Title, CardItem, Card, Item, Input, Grid, Col} from 'native-base';
 import { connect } from 'react-redux';
 import { detailPoke, getCategoriesPoke } from '../redux/actions/pokemons';
 class PokemonCategory extends Component {

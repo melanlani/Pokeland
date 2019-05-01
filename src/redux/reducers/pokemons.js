@@ -3,7 +3,6 @@ const initialState = {
   categories: [],
   pokemon: [],
   types: [],
-  pokemon: [],
   pending: false,
   error: ''
 }
@@ -26,6 +25,12 @@ export default pokemons = (state = initialState, action) => {
         error: action.payload.data,
         pending: false,
       };
+
+    case 'GET_ALLPOKEMON_PENDING':
+      return {
+        ...state,
+        pending: true
+      };
     case 'GET_ALLPOKEMON_FULFILLED':
       return {
         ...state,
@@ -47,12 +52,18 @@ export default pokemons = (state = initialState, action) => {
 
     case 'GET_CATEGORIES_PENDING':
       return {
+        ...state,
         pending: true
       };
     case 'GET_CATEGORIES_FULFILLED':
       return {
         ...state,
         categories: action.payload.data.result,
+        pending: false,
+      };
+    case 'GET_CATEGORIES_REJECTED':
+      return {
+        error: action.payload.data,
         pending: false,
       };
     case 'GET_CATEGORIESPOKE_PENDING':
@@ -105,12 +116,12 @@ export default pokemons = (state = initialState, action) => {
     case 'ADD_POKEMON_PENDING':
       return {
         ...state,
+        pokemons: [],
         pending: true
       };
     case 'ADD_POKEMON_FULFILLED':
       return {
         ...state,
-        pokemons: action.payload.data.result,
         pending: false,
       };
     case 'ADD_POKEMON_REJECTED':
@@ -129,10 +140,27 @@ export default pokemons = (state = initialState, action) => {
 
       return {
         ...state,
-        pokemons: state.pokemons.filter(listPoke=> listPoke.id !== action.payload.data.pokemons.id),
+        pokemons: state.pokemons.filter(cartItem=> cartItem.id !== action.payload.data.result.id),
         pending: false
       }
 
+    case 'UPDATE_POKEMON_PENDING':
+      return {
+        ...state,
+        pending: true
+      };
+    case 'UPDATE_POKEMON_FULFILLED':
+      return {
+        ...state,
+        pokemon: action.payload.data.result,
+        pending: false,
+      };
+    case 'UPDATE_POKEMON_REJECTED':
+      return {
+        ...state,
+        error: action.payload.data,
+        pending: false,
+      };
     default:
       return state;
   }

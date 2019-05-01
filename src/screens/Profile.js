@@ -70,6 +70,11 @@ class Profile extends Component {
           {
             this.props.deleteItemDispatch(id);
             this.props.getAllPokemonDispatch();
+            Toast.show({
+              text: 'Pokemon Deleted Success',
+              duration: 1500
+            })
+            this.props.navigation.navigate('Profile')
           }
         },
       ],
@@ -135,9 +140,16 @@ class Profile extends Component {
                         <Text style={styles.txtresep}>{item.name_poke}</Text>
                       </Body>
                     </Left>
+                    <Body>
+                    </Body>
                     <Right>
                       <Button transparent small style={styles.btnDelete} onPress={() => this.deleteItem(item.id)} >
                         <Icon name="close" style={{color:'#3a81f7'}}/>
+                      </Button>
+                      <Button transparent small style={styles.btnDelete} onPress={() => {this.props.navigation.navigate('UpdatePokemon', {
+                        id: item.id
+                      })}}>
+                        <Icon name="pencil" type="FontAwesome" style={{color:'#DD5144'}}/>
                       </Button>
                     </Right>
                   </CardItem>

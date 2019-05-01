@@ -61,6 +61,24 @@ export const savePokemon = (category, selectedItems, name_poke, image_poke, lati
   }
 }
 
+export const updatePokemon = (category, selectedItems, name_poke, image_poke, latitude, longitude,id) => {
+
+  let data = new FormData();
+    data.append('name_poke', name_poke);
+    data.append('image_poke', image_poke);
+    data.append('longitude', longitude);
+    data.append('latitude', latitude);
+    data.append('category_id', category);
+
+    selectedItems.map(element => {
+        data.append('types', element);
+    });
+  return {
+    type: 'UPDATE_POKEMON',
+    payload: axios.post(`${baseUrl}/api/v1/pokemon/${id}`,data)
+  }
+}
+
 export const detailPoke = (id) => {
   return {
     type: 'DETAIL_POKE',

@@ -54,7 +54,7 @@ class DetailPokemon extends Component {
                   </Left>
                 </CardItem>
               <CardItem cardBody>
-                <Image source={{ uri: item.image_poke }} style={{height: 504, width: '100%',resizeMode: 'contain'}}/>
+                <Image source={{ uri: item.image_poke }} style={{height: 300, width: '100%',resizeMode: 'contain'}}/>
               </CardItem>
                 <Card>
                   <CardItem>
@@ -72,6 +72,22 @@ class DetailPokemon extends Component {
                       </Body>
                     </Left>
                   </CardItem>
+                </Card>
+                <Card>
+                <Text style={styles.txtLocation}>Location</Text>
+                  <MapView
+                    style={{ width: '100%', height: 300 }}
+                    region={this.state.pokeMaps}
+                  >
+                    <MapView.Marker
+                        draggable
+                        coordinate={{
+                          latitude: parseFloat(item.latitude),
+                          longitude: parseFloat(item.longitude)
+                        }}
+                        title={item.name_poke}
+                    ><Image source={{ uri: item.image_poke }} style={{ width: 40, height: 40 }} /></MapView.Marker>
+                  </MapView>
                 </Card>
               </Card>
           )}
@@ -114,6 +130,14 @@ const styles = StyleSheet.create({
     height: 400,
     width: null,
     flex: 1
+  },
+  txtLocation: {
+    marginLeft:18,
+    fontWeight:'bold',
+    color:'#3a81f7',
+    fontSize:16,
+    marginBottom:12,
+    marginTop:12
   }
 
 });

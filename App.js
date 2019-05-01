@@ -7,6 +7,7 @@ import store from './src/redux/store';
 
 import Home from './src/screens//Home'
 import InputPokemon from './src/screens/InputPokemon'
+import UpdatePokemon from './src/screens/UpdatePokemon'
 import Profile from './src/screens/Profile'
 import Map from './src/screens/Map'
 import DetailPokemon from './src/screens/DetailPokemon'
@@ -60,6 +61,21 @@ const MainNavigator = createStackNavigator(
     headerMode: '',
     navigationOptions: {
       title: 'Input Pokemon',
+      headerStyle: {
+        backgroundColor: '#3a81f7',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      }
+    }
+  },
+  
+  UpdatePokemon : {
+    screen: UpdatePokemon,
+    headerMode: '',
+    navigationOptions: {
+      title: 'Update Pokemon',
       headerStyle: {
         backgroundColor: '#3a81f7',
       },
